@@ -30,14 +30,14 @@ from tensor2tensor.utils import registry
 
 import tensorflow as tf
 
-_ENDE_TRAIN_DATASETS = [
+_LTLTSTR_TRAIN_DATASETS = [
     [
         "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-combo-v1.tgz",  # pylint: disable=line-too-long
         ("training-parallel-combo-v1/combination_v1.lt-lt_str.lt",
          "training-parallel-combo-v1/combination_v1.lt-lt_str.lt_str")
     ],
 ]
-_ENDE_TEST_DATASETS = [
+_LTLTSTR_TEST_DATASETS = [
     [
         "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-ch-v1.tgz",
         ("training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt",
@@ -46,23 +46,23 @@ _ENDE_TEST_DATASETS = [
 ]
 
 
-def _get_wmt_ende_bpe_dataset(directory, filename):
-  """Extract the WMT en-de corpus `filename` to directory unless it's there."""
+def _get_wmt_ltltstr_bpe_dataset(directory, filename):
+  """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
   train_path = os.path.join(directory, filename)
-  if not (tf.gfile.Exists(train_path + ".lt_str") and
+  if not (tf.gfile.Exists(train_path + ".ltstr") and
           tf.gfile.Exists(train_path + ".lt")):
     url = ("https://drive.google.com/uc?export=download&id="
            "0B_bZck-ksdkpM25jRUN2X2UxMm8")
     corpus_file = generator_utils.maybe_download_from_drive(
-        directory, "wmt16_lt_str-lt.tar.gz", url)
+        directory, "wmt16_lt_ltstr.tar.gz", url)
     with tarfile.open(corpus_file, "r:gz") as corpus_tar:
       corpus_tar.extractall(directory)
   return train_path
 
 
 @registry.register_problem
-class TranslateLtstrWmtBpe32k(translate.TranslateProblem):
-  """Problem spec for WMT Lt-Lt_str translation, BPE version."""
+class TranslateLtltstrWmtBpe32k(translate.TranslateProblem):
+  """Problem spec for WMT Lt-Ltstr translation, BPE version."""
 
   @property
   def vocab_type(self):
@@ -73,11 +73,11 @@ class TranslateLtstrWmtBpe32k(translate.TranslateProblem):
     return "UNK"
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
-    """Instance of token generator for the WMT lt->lt_str task, training set."""
+    """Instance of token generator for the WMT lt->ltstr task, training set."""
     train = dataset_split == problem.DatasetSplit.TRAIN
     dataset_path = ("train.tok.clean.bpe.32000"
-                    if train else "chrestomatija.tok.bpe.32000")
-    train_path = _get_wmt_ende_bpe_dataset(tmp_dir, dataset_path)
+                    if train else "chrest.tok.bpe.32000")
+    train_path = _get_wmt_ltltstr_bpe_dataset(tmp_dir, dataset_path)
 
     # Vocab
     vocab_path = os.path.join(data_dir, self.vocab_filename)
@@ -90,12 +90,12 @@ class TranslateLtstrWmtBpe32k(translate.TranslateProblem):
           None, vocab_list=vocab_list).store_to_file(vocab_path)
 
     return text_problems.text2text_txt_iterator(train_path + ".lt",
-                                                train_path + ".lt_str")
+                                                train_path + ".ltstr")
 
 
 @registry.register_problem
-class TranslateLtstrWmt8k(translate.TranslateProblem):
-  """Problem spec for WMT En-De translation."""
+class TranslateLtltstrWmt8k(translate.TranslateProblem):
+  """Problem spec for WMT Lt-Ltstr translation."""
 
   @property
   def approx_vocab_size(self):
@@ -103,11 +103,11 @@ class TranslateLtstrWmt8k(translate.TranslateProblem):
 
   def source_data_files(self, dataset_split):
     train = dataset_split == problem.DatasetSplit.TRAIN
-    return _ENDE_TRAIN_DATASETS if train else _ENDE_TEST_DATASETS
+    return _LTLTSTR_TRAIN_DATASETS if train else _LTLTSTR_TEST_DATASETS
 
 
 @registry.register_problem
-class TranslateLtstrWmt32k(TranslateLtstrWmt8k):
+class TranslateLtltstrWmt32k(TranslateLtltstrWmt8k):
 
   @property
   def approx_vocab_size(self):
@@ -115,7 +115,7 @@ class TranslateLtstrWmt32k(TranslateLtstrWmt8k):
 
 
 @registry.register_problem
-class TranslateLtstrWmt32kPacked(TranslateLtstrWmt32k):
+class TranslateLtltstrWmt32kPacked(TranslateLtltstrWmt32k):
 
   @property
   def packed_length(self):
@@ -123,11 +123,11 @@ class TranslateLtstrWmt32kPacked(TranslateLtstrWmt32k):
 
   @property
   def vocab_filename(self):
-    return TranslateLtstrWmt32k().vocab_filename
+    return TranslateLtltstrWmt32k().vocab_filename
 
 
 @registry.register_problem
-class TranslateLtstrWmt8kPacked(TranslateLtstrWmt8k):
+class TranslateLtltstrWmt8kPacked(TranslateLtltstrWmt8k):
 
   @property
   def packed_length(self):
@@ -135,12 +135,12 @@ class TranslateLtstrWmt8kPacked(TranslateLtstrWmt8k):
 
   @property
   def vocab_filename(self):
-    return TranslateLtstrWmt8k().vocab_filename
+    return TranslateLtltstrWmt8k().vocab_filename
 
 
 @registry.register_problem
-class TranslateLtstrWmtCharacters(TranslateLtstrWmt8k):
-  """Problem spec for WMT En-De translation."""
+class TranslateLtltstrWmtCharacters(TranslateLtltstrWmt8k):
+  """Problem spec for WMT Lt-Ltstr translation."""
 
   @property
   def vocab_type(self):
