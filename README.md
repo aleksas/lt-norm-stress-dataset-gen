@@ -28,8 +28,9 @@ TMP_DIR=/tmp/t2t_datagen
 HPARAMS=transformer_base
 MODEL=transformer
 
-
 mkdir -p $DATA_DIR $TMP_DIR
+
+tensorboard --logdir $TRAIN_DIR &
 
 t2t-trainer \
  --generate_data \
@@ -44,6 +45,7 @@ t2t-trainer \
 
 # References
 - [How to train using my own dataset?](https://github.com/tensorflow/tensor2tensor/issues/516)
+- [Walkthrough](https://github.com/tensorflow/tensor2tensor/blob/master/README.md#walkthrough)
 - [cant train translation on my own data](https://github.com/tensorflow/tensor2tensor/issues/876)
 - [Adding your own components](https://github.com/tensorflow/tensor2tensor#adding-your-own-components)
 - [Defining the Problem](https://github.com/tensorflow/tensor2tensor/blob/master/docs/new_problem.md)
