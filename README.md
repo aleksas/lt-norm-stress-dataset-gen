@@ -25,6 +25,9 @@ PROBLEM=translate_ltltstr_wmt32k
 DATA_DIR=$HOME/t2t_data
 OUTPUT_DIR=$HOME/train/ltltstr
 TMP_DIR=/tmp/t2t_datagen
+HPARAMS=transformer_base
+MODEL=transformer
+
 
 mkdir -p $DATA_DIR $TMP_DIR
 
@@ -34,7 +37,9 @@ t2t-trainer \
  --data_dir=$DATA_DIR \
  --tmp_dir=$TMP_DIR \
  --output_dir=$OUTPUT_DIR \
- --t2t_usr_dir=$USR_DIR
+ --t2t_usr_dir=$USR_DIR \
+ --hparams_set=$HPARAMS \
+ --model=$MODEL
 ```
 
 # References
