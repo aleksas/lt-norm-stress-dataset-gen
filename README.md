@@ -9,24 +9,25 @@ tensor2tensor for automatic stressing text in Lithuanian
 ## Start CPU only container
 [DockerHub](https://hub.docker.com/r/bitspeech/tensor2tensor/), [GitHub](https://github.com/BitSpeech/docker)
 
-> docker run -it -p 8888:8888 bitspeech/tensor2tensor:1.6.6 /bin/bash
+> docker run -it -p 8888:8888 -p 6006:6006 bitspeech/tensor2tensor:1.6.6 /bin/bash
 
 ## Start GPU (CUDA) container
 
 Install nvidia-docker and run
 
-> nvidia-docker run -it -p 8888:8888 bitspeech/tensor2tensor:1.6.6-gpu /bin/bash
+> nvidia-docker run -it -p 8888:8888 -p 6006:6006 bitspeech/tensor2tensor:1.6.6-gpu /bin/bash
 
 # Run trainer
 
 ```bash
-USR_DIR=.
 PROBLEM=translate_ltltstr_wmt32k
-DATA_DIR=$HOME/t2t_data
-OUTPUT_DIR=$HOME/train/ltltstr
-TMP_DIR=/tmp/t2t_datagen
-HPARAMS=transformer_base
+HPARAMS=transformer_base_single_gpu
 MODEL=transformer
+
+USR_DIR=.
+DATA_DIR=$HOME/t2t_data
+TMP_DIR=/tmp/t2t_datagen
+TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS
 
 mkdir -p $DATA_DIR $TMP_DIR
 
@@ -37,7 +38,7 @@ t2t-trainer \
  --problem=$PROBLEM \
  --data_dir=$DATA_DIR \
  --tmp_dir=$TMP_DIR \
- --output_dir=$OUTPUT_DIR \
+ --output_dir=$TRAIN_DIR \
  --t2t_usr_dir=$USR_DIR \
  --hparams_set=$HPARAMS \
  --model=$MODEL

@@ -96,14 +96,30 @@ class TranslateLtltstrWmtBpe32k(translate.TranslateProblem):
 @registry.register_problem
 class TranslateLtltstrWmt8k(translate.TranslateProblem):
   """Problem spec for WMT Lt-Ltstr translation."""
+  
+  @property
+  def dataset_splits(self):
+    """Splits of data to produce and number of output shards for each."""
+    # 10% evaluation data
+    return [{
+        "split": problem.DatasetSplit.TRAIN,
+        "shards": 9,
+    }, {
+        "split": problem.DatasetSplit.EVAL,
+        "shards": 1,
+    }]
 
   @property
   def approx_vocab_size(self):
     return 2**13  # 8192
 
   def source_data_files(self, dataset_split):
-    train = dataset_split == problem.DatasetSplit.TRAIN
-    return _LTLTSTR_TRAIN_DATASETS if train else _LTLTSTR_TEST_DATASETS
+    if dataset_split == problem.DatasetSplit.TRAIN:
+      return _LTLTSTR_TRAIN_DATASETS
+    elif dataset_split == problem.DatasetSplit.EVAL:
+      return _LTLTSTR_TRAIN_DATASETS
+    else: # if dataset_split == problem.DatasetSplit.TEST:
+      return  _LTLTSTR_TEST_DATASETS
 
 
 @registry.register_problem
