@@ -50,3 +50,4 @@ t2t-trainer \
 - [cant train translation on my own data](https://github.com/tensorflow/tensor2tensor/issues/876)
 - [Adding your own components](https://github.com/tensorflow/tensor2tensor#adding-your-own-components)
 - [Defining the Problem](https://github.com/tensorflow/tensor2tensor/blob/master/docs/new_problem.md)
+- [Sequence Tagging with pytorch](https://medium.com/@kolloldas/building-the-mighty-transformer-for-sequence-tagging-in-pytorch-part-i-a1815655cd8)
