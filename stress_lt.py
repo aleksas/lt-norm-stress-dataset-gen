@@ -129,6 +129,13 @@ class TranslateLtltstrWmt32k(TranslateLtltstrWmt8k):
   def approx_vocab_size(self):
     return 2**15  # 32768
 
+@registry.register_problem
+class TranslateLtltstrWmt4k(TranslateLtltstrWmt8k):
+
+  @property
+  def approx_vocab_size(self):
+    return 2**12  # 4096
+
 
 @registry.register_problem
 class TranslateLtltstrWmt32kPacked(TranslateLtltstrWmt32k):
