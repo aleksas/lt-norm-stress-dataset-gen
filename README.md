@@ -17,10 +17,12 @@ Install nvidia-docker and run
 
 > nvidia-docker run -it -p 8888:8888 -p 6006:6006 bitspeech/tensor2tensor:1.6.6-gpu /bin/bash
 
-# Run trainer
+# Run trainer & evaluate
+
+## Train 
 
 ```bash
-PROBLEM=translate_ltltstr_wmt32k
+PROBLEM=translate_ltltstr_wmt4k
 HPARAMS=transformer_base_single_gpu
 MODEL=transformer
 
@@ -42,6 +44,39 @@ t2t-trainer \
  --t2t_usr_dir=$USR_DIR \
  --hparams_set=$HPARAMS \
  --model=$MODEL
+```
+
+## Evaluate 
+
+```bash
+
+PROBLEM=translate_ltltstr_wmt4k
+HPARAMS=transformer_base_single_gpu
+MODEL=transformer
+
+USR_DIR=.
+DATA_DIR=$HOME/t2t_data
+TMP_DIR=/tmp/t2t_datagen
+TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS
+
+DECODE_FILE=$DATA_DIR/decode_this.txt
+DECODE_TO_FILE=$DATA_DIR/decode_result.txt
+echo "Laba diena drauai!" > $DECODE_FILE
+echo "Viskas bus gerai." >> $DECODE_FILE
+
+BEAM_SIZE=4
+ALPHA=0.6
+
+t2t-decoder \
+  --data_dir=$DATA_DIR \
+  --problem=$PROBLEM \
+  --model=$MODEL \
+  --hparams_set=$HPARAMS \
+  --output_dir=$TRAIN_DIR \
+  --t2t_usr_dir=$USR_DIR \
+  --decode_hparams="beam_size=$BEAM_SIZE,alpha=$ALPHA" \
+  --decode_from_file=$DECODE_FILE \
+  --decode_to_file=$DECODE_TO_FILE
 ```
 
 # References
