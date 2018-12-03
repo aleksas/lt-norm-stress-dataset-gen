@@ -1,0 +1,17 @@
+FROM tensorflow/tensorflow:1.12.0-gpu-py3
+
+# Set the locale
+RUN apt-get clean && apt-get update && apt-get install -y locales
+RUN locale-gen en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
+
+# Update pip and install t2t
+RUN pip install -U pip && pip install --no-cache-dir \
+        tensor2tensor
+
+EXPOSE 6006
+EXPOSE 8888
+
+WORKDIR "/"
+
+CMD ["/bin/bash"]
