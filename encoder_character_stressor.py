@@ -39,8 +39,6 @@ _LTLTSTR_TRAIN_DATASETS = [
         ("training-parallel-combo-v1/combination_v1.lt-lt_str.lt",
          "training-parallel-combo-v1/combination_v1.lt-lt_str.lt_str_lbl")
     ],
-]
-_LTLTSTR_TEST_DATASETS = [
     [
         "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-ch-v1.tgz",
         ("training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt",
@@ -49,12 +47,12 @@ _LTLTSTR_TEST_DATASETS = [
 ]
 
 def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
-  with codecs.open(source_txt_path, 'rt', 'UTF-8') as f:
+  with codecs.open(source_txt_path, 'r', 'UTF-8') as f:
     content = f.read()
   
   content = _RE_PATTERN.sub(r"\1", content)
 
-  with codecs.open(source_txt_path, 'wt', 'UTF-8') as f:
+  with codecs.open(source_txt_path, 'w', 'UTF-8') as f:
     f.write(content)
 
 def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=None):
@@ -84,14 +82,13 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
 def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
   train_path = os.path.join(directory, filename)
-  if not (tf.gfile.Exists(train_path + ".lt_str_lbl"):
+  if not (tf.gfile.Exists(train_path + ".lt_str_lbl")):
     if not tf.gfile.Exists(train_path + ".lt"):
-      url = ("https://drive.google.com/uc?export=download&id="
-            "0B_bZck-ksdkpM25jRUN2X2UxMm8")
-      corpus_file = generator_utils.maybe_download_from_drive(
-          directory, "wmt16_lt_ltstr.tar.gz", url)
-      with tarfile.open(corpus_file, "r:gz") as corpus_tar:
-        corpus_tar.extractall(directory)
+      for url, files in _LTLTSTR_TRAIN_DATASETS:
+        corpus_file = generator_utils.maybe_download_from_drive(
+            directory, "wmt16_lt_ltstr.tar.gz", url)
+        with tarfile.open(corpus_file, "r:gz") as corpus_tar:
+          corpus_tar.extractall(directory)
 
     encode_class_to_labels_file(train_path + ".lt", train_path + ".lt_str_lbl", _CLASS_LABELS)    
   return train_path
