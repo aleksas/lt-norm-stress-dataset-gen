@@ -21,6 +21,8 @@ from __future__ import print_function
 
 import os
 import tarfile
+import re
+import codecs
 from tensor2tensor.data_generators import generator_utils
 from tensor2tensor.data_generators import problem
 from tensor2tensor.data_generators import text_problems
@@ -29,6 +31,7 @@ from tensor2tensor.utils import registry
 import tensorflow as tf
 
 _CLASS_LABELS = ['`', '^', '~', ' ']
+_RE_PATTERN = re.compile(r' ([`^~])')
 
 _LTLTSTR_TRAIN_DATASETS = [
     [
@@ -44,6 +47,15 @@ _LTLTSTR_TEST_DATASETS = [
          "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt_str_lbl")
     ],
 ]
+
+def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
+  with codecs.open(source_txt_path, 'rt', 'UTF-8') as f:
+    content = f.read()
+  
+  content = _RE_PATTERN.sub(r"\1", content)
+
+  with codecs.open(source_txt_path, 'wt', 'UTF-8') as f:
+    f.write(content)
 
 def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=None):
   """Yield dicts for Text2ClassProblem.generate_samples from lines of files.
@@ -72,14 +84,16 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
 def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
   train_path = os.path.join(directory, filename)
-  if not (tf.gfile.Exists(train_path + ".lt_str_lbl") and
-          tf.gfile.Exists(train_path + ".lt")):
-    url = ("https://drive.google.com/uc?export=download&id="
-           "0B_bZck-ksdkpM25jRUN2X2UxMm8")
-    corpus_file = generator_utils.maybe_download_from_drive(
-        directory, "wmt16_lt_ltstr.tar.gz", url)
-    with tarfile.open(corpus_file, "r:gz") as corpus_tar:
-      corpus_tar.extractall(directory)
+  if not (tf.gfile.Exists(train_path + ".lt_str_lbl"):
+    if not tf.gfile.Exists(train_path + ".lt"):
+      url = ("https://drive.google.com/uc?export=download&id="
+            "0B_bZck-ksdkpM25jRUN2X2UxMm8")
+      corpus_file = generator_utils.maybe_download_from_drive(
+          directory, "wmt16_lt_ltstr.tar.gz", url)
+      with tarfile.open(corpus_file, "r:gz") as corpus_tar:
+        corpus_tar.extractall(directory)
+
+    encode_class_to_labels_file(train_path + ".lt", train_path + ".lt_str_lbl", _CLASS_LABELS)    
   return train_path
 
 @registry.register_problem
