@@ -83,14 +83,14 @@ def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
   train_path = os.path.join(directory, filename)
   if not (tf.gfile.Exists(train_path + ".lt_str_lbl")):
-    if not tf.gfile.Exists(train_path + ".lt"):
+    if not tf.gfile.Exists(train_path + ".lt") or not tf.gfile.Exists(train_path + ".lt_str_ascii"):
       for url, files in _LTLTSTR_TRAIN_DATASETS:
         corpus_file = generator_utils.maybe_download_from_drive(
             directory, url.split('/')[-1], url)
         with tarfile.open(corpus_file, "r:gz") as corpus_tar:
           corpus_tar.extractall(directory)
 
-    encode_class_to_labels_file(train_path + ".lt", train_path + ".lt_str_lbl", _CLASS_LABELS)    
+    encode_class_to_labels_file(train_path + ".lt_str_ascii", train_path + ".lt_str_lbl", _CLASS_LABELS)    
   return train_path
 
 @registry.register_problem
