@@ -86,7 +86,7 @@ def _get_wmt_ltltstr_bpe_dataset(directory, filename):
     if not tf.gfile.Exists(train_path + ".lt"):
       for url, files in _LTLTSTR_TRAIN_DATASETS:
         corpus_file = generator_utils.maybe_download_from_drive(
-            directory, "wmt16_lt_ltstr.tar.gz", url)
+            directory, url.split('/')[-1], url)
         with tarfile.open(corpus_file, "r:gz") as corpus_tar:
           corpus_tar.extractall(directory)
 
@@ -154,8 +154,8 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     """Instance of token generator for the WMT lt->ltstr task, training set."""
     train = dataset_split == problem.DatasetSplit.TRAIN
-    dataset_path = ("train.tok.clean.bpe.32000"
-                    if train else "chrest.tok.bpe.32000")
+    dataset_path = ("combination_v1.lt-lt_str"
+                    if train else "chrestomatija_v1.lt-lt_str")
     train_path = _get_wmt_ltltstr_bpe_dataset(tmp_dir, dataset_path)
 
     # Vocab
