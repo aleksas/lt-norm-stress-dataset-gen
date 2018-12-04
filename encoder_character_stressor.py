@@ -154,8 +154,8 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     """Instance of token generator for the WMT lt->ltstr task, training set."""
     train = dataset_split == problem.DatasetSplit.TRAIN
-    dataset_path = ("combination_v1.lt-lt_str"
-                    if train else "chrestomatija_v1.lt-lt_str")
+    dataset_path = ("training-parallel-combo-v1/combination_v1.lt-lt_str"
+                    if train else "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str")
     train_path = _get_wmt_ltltstr_bpe_dataset(tmp_dir, dataset_path)
 
     # Vocab
