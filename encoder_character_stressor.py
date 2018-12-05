@@ -55,7 +55,8 @@ def txt_line_iterator(txt_path):
 
 def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
   content = '\n'.join(txt_line_iterator(source_txt_path))
-  content = _RE_PATTERN.sub(r"\1", content)
+  content = _RE_NON_STRESS_PATTERN.sub(r"_", content)
+  content = _RE_STRESS_PATTERN.sub(r"\1", content)
 
   with codecs.open(source_txt_path, 'w', 'UTF-8') as f:
     f.write(content)
