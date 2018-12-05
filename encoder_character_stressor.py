@@ -30,8 +30,9 @@ from tensor2tensor.utils import registry
 
 import tensorflow as tf
 
-_CLASS_LABELS = ['`', '^', '~', ' ']
-_RE_PATTERN = re.compile(r' ([`^~])')
+_CLASS_LABELS = ['`', '^', '~', '_']
+_RE_NON_STRESS_PATTERN = re.compile(r'[^\r\n`^~]')
+_RE_STRESS_PATTERN = re.compile(r'_([`^~])')
 
 _LTLTSTR_TRAIN_DATASETS = [
     [
@@ -46,10 +47,14 @@ _LTLTSTR_TRAIN_DATASETS = [
     ],
 ]
 
+def txt_line_iterator(txt_path):
+  """Iterate through lines of file."""
+  with tf.gfile.Open(txt_path) as f:
+    for line in f:
+      yield line.strip()
+
 def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
-  with codecs.open(source_txt_path, 'r', 'UTF-8') as f:
-    content = f.read()
-  
+  content = '\n'.join(txt_line_iterator(source_txt_path))
   content = _RE_PATTERN.sub(r"\1", content)
 
   with codecs.open(source_txt_path, 'w', 'UTF-8') as f:
