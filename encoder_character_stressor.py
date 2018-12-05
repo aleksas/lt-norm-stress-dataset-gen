@@ -83,7 +83,7 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
     else:
       labels = [int(label) or label in labels]
 
-    yield {"inputs": inputs, "labels": labels}
+    yield {"inputs": inputs, "label": labels}
 
 def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
@@ -122,6 +122,14 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
       return _LTLTSTR_TRAIN_DATASETS
     else: # if dataset_split == problem.DatasetSplit.TEST:
       return _LTLTSTR_TEST_DATASETS
+
+  def generate_encoded_samples(self, data_dir, tmp_dir, dataset_split):
+    generator = self.generate_samples(data_dir, tmp_dir, dataset_split)
+    encoder = self.get_or_create_vocab(data_dir, tmp_dir)
+    for sample in generator:
+      inputs = encoder.encode(sample["inputs"])
+      inputs.append(text_encoder.EOS_ID)
+      yield {"inputs": inputs, "targets": sample["labels"]}
 
   @property
   def target_space_id(self):
