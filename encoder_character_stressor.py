@@ -26,6 +26,7 @@ import codecs
 from tensor2tensor.data_generators import generator_utils
 from tensor2tensor.data_generators import problem
 from tensor2tensor.data_generators import text_problems
+from tensor2tensor.data_generators import text_encoder
 from tensor2tensor.utils import registry
 
 import tensorflow as tf
