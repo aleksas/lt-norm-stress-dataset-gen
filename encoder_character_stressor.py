@@ -84,7 +84,7 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
     else:
       labels = [int(label) or label in labels]
 
-    yield {"inputs": inputs, "label": labels}
+    yield {"inputs": inputs, "labels": labels}
 
 def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
