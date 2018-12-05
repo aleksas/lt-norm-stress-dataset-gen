@@ -163,16 +163,6 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
                     if train else "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str")
     train_path = _get_wmt_ltltstr_bpe_dataset(tmp_dir, dataset_path)
 
-    # Vocab
-    vocab_path = os.path.join(data_dir, self.vocab_filename)
-    if not tf.gfile.Exists(vocab_path):
-      bpe_vocab = os.path.join(tmp_dir, "vocab.bpe.32000")
-      with tf.gfile.Open(bpe_vocab) as f:
-        vocab_list = f.read().split("\n")
-      vocab_list.append(self.oov_token)
-      text_encoder.TokenTextEncoder(
-          None, vocab_list=vocab_list).store_to_file(vocab_path)
-
     return text2multiclass_txt_iterator(train_path + ".lt",
                                         train_path + ".lt_str_lbl",
                                         _CLASS_LABELS)
