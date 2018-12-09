@@ -53,7 +53,7 @@ def txt_line_iterator(txt_path):
   """Iterate through lines of file."""
   with tf.gfile.Open(txt_path) as f:
     for line in f:
-      yield line.strip()
+      yield line.strip('\ufeff').strip()
 
 def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
   content = '\n'.join(txt_line_iterator(source_txt_path))
@@ -102,28 +102,35 @@ def _get_wmt_ltltstr_bpe_dataset(directory, filename):
   return train_path
 
 @registry.register_problem
-class EncoderCharacterStressor(text_problems.Text2ClassProblem):
-  def hparams(self, defaults, unused_model_hparams):
-    p = defaults
-    inputs_encoder = self._encoders["inputs"]
-    targets_encoder = self._encoders["targets"]
-
-    p.modality = {
-        "inputs": modalities.SymbolModality,
-        "targets": modalities.MultiLabelModality,
-    }
-    p.vocab_size = {
-        "inputs": inputs_encoder.vocab_size,
-        "targets": targets_encoder.vocab_size,
-    }
-  
+class EncoderCharacterStressor(text_problems.Text2ClassProblem):  
   def source_data_files(self, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
       return _LTLTSTR_TRAIN_DATASETS
     elif dataset_split == problem.DatasetSplit.EVAL:
       return _LTLTSTR_TRAIN_DATASETS
     else: # if dataset_split == problem.DatasetSplit.TEST:
-      return _LTLTSTR_TEST_DATASETS
+      return _LTLTSTR_TRAIN_DATASETS
+
+  def hparams(self, defaults, unused_model_hparams):
+    p = defaults
+    inputs_encoder = self._encoders["inputs"]
+
+    p.modality = {
+        "inputs": modalities.SymbolModality,
+        "targets": modalities.ClassLabelModality,
+    }
+    p.vocab_size = {
+        "inputs": inputs_encoder.vocab_size,
+        "targets": self.num_classes
+    }
+  
+  def example_reading_spec(self):
+    data_fields = {
+        "inputs": tf.VarLenFeature(tf.int64),
+        "targets": tf.VarLenFeature(tf.int64),
+    }
+    data_items_to_decoders = None
+    return (data_fields, data_items_to_decoders)
 
   def generate_encoded_samples(self, data_dir, tmp_dir, dataset_split):
     generator = self.generate_samples(data_dir, tmp_dir, dataset_split)

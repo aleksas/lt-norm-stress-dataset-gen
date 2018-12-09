@@ -1,5 +1,3 @@
-[new][./encoder_character_stressor_readme.md]
-
 # tensor-stressor
 tensor2tensor for automatic stressing text in Lithuanian
 
@@ -15,9 +13,9 @@ tensor2tensor for automatic stressing text in Lithuanian
 ## Train 
 
 ```bash
-PROBLEM=translate_ltltstr_wmt4k
-HPARAMS=transformer_base_single_gpu
-MODEL=transformer
+PROBLEM=encoder_character_stressor
+HPARAMS=transformer_base
+MODEL=transformer_encoder
 
 USR_DIR=.
 DATA_DIR=$HOME/t2t_data
