@@ -38,8 +38,7 @@ t2t-trainer \
  --hparams_set=$HPARAMS_SET \
  --hparams=$HPARAMS \
  --model=$MODEL \
- --worker_gpu=$WORKER_GPU \
- --eval_drop_long_sequences=True
+ --worker_gpu=$WORKER_GPU
 ```
 
 ## Evaluate 

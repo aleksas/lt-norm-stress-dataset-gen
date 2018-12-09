@@ -33,6 +33,7 @@ from tensor2tensor.utils import registry
 import tensorflow as tf
 
 _CLASS_LABELS = ['`', '^', '~', '_']
+_CLASS_LABELS_EOS_ID = len(_CLASS_LABELS) + 1
 _RE_NON_STRESS_PATTERN = re.compile(r'[^\r\n`^~]')
 _RE_STRESS_PATTERN = re.compile(r'_([`^~])')
 
@@ -138,7 +139,10 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
     for sample in generator:
       inputs = encoder.encode(sample["inputs"])
       inputs.append(text_encoder.EOS_ID)
-      yield {"inputs": inputs, "targets": sample["labels"]}
+      targets = sample["labels"]
+      targets.append(_CLASS_LABELS_EOS_ID)
+
+      yield {"inputs": inputs, "targets": targets}
 
   @property
   def target_space_id(self):
@@ -168,7 +172,7 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
 
   @property
   def num_classes(self):
-    return len(_CLASS_LABELS)
+    return len(_CLASS_LABELS) + 1
 
   def class_labels(self, data_dir):
     del data_dir
