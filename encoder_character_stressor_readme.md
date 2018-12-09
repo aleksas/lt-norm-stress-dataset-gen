@@ -14,13 +14,15 @@ tensor2tensor for automatic stressing text in Lithuanian
 
 ```bash
 PROBLEM=encoder_character_stressor
-HPARAMS=transformer_base
+HPARAMS_SET=transformer_base
 MODEL=transformer_encoder
+WORKER_GPU=2
+HPARAMS="eval_drop_long_sequences=True"
 
 USR_DIR=.
 DATA_DIR=$HOME/t2t_data
 TMP_DIR=/tmp/t2t_datagen
-TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS
+TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS_SET
 
 mkdir -p $DATA_DIR $TMP_DIR
 
@@ -33,17 +35,20 @@ t2t-trainer \
  --tmp_dir=$TMP_DIR \
  --output_dir=$TRAIN_DIR \
  --t2t_usr_dir=$USR_DIR \
- --hparams_set=$HPARAMS \
- --model=$MODEL
+ --hparams_set=$HPARAMS_SET \
+ --hparams=$HPARAMS \
+ --model=$MODEL \
+ --worker_gpu=$WORKER_GPU \
+ --eval_drop_long_sequences=True
 ```
 
 ## Evaluate 
 
 ```bash
 
-PROBLEM=translate_ltltstr_wmt4k
-HPARAMS=transformer_base_single_gpu
-MODEL=transformer
+PROBLEM=encoder_character_stressor
+HPARAMS=transformer_base
+MODEL=transformer_encoder
 
 USR_DIR=.
 DATA_DIR=$HOME/t2t_data

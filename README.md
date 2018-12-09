@@ -1,4 +1,4 @@
-[new][./encoder_character_stressor_readme.md]
+[new](./encoder_character_stressor_readme.md)
 
 # tensor-stressor
 tensor2tensor for automatic stressing text in Lithuanian
