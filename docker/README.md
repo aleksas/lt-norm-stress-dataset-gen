@@ -24,7 +24,7 @@ For GPU support install NVidia drivers (ideally latest) and
 [nvidia-docker](https://github.com/NVIDIA/nvidia-docker). Run using
 
 - CPU
-> nvidia-docker run -ti tensor2tensor:tf-1.12.0-py3
+> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor2tensor:tf-1.12.0-py3
 
 - GPU
-> nvidia-docker run -ti tensor2tensor:tf-1.12.0-gpu-py3
+> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor2tensor:tf-1.12.0-gpu-py3
