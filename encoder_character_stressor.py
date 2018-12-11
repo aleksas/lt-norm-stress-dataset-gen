@@ -45,7 +45,7 @@ def txt_line_iterator(txt_path):
     for line in f:
       yield line.strip('\ufeff').strip()
 
-def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
+def stressed_text2stress(source_txt_path, labels_txt_path, class_strs):
   content = '\n'.join(txt_line_iterator(source_txt_path))
   content = _RE_NON_STRESS_PATTERN.sub(r"_", content)
   content = _RE_STRESS_PATTERN.sub(r"\1", content)
@@ -87,7 +87,7 @@ def _get_ltltstr_dataset(directory, filename):
         with tarfile.open(corpus_file, "r:gz") as corpus_tar:
           corpus_tar.extractall(directory)
 
-    encode_class_to_labels_file(train_path + ".lt_str_ascii", train_path + ".lt_str_lbl", _STRESS_CLASS_LABELS)    
+    stressed_text2stress(train_path + ".lt_str_ascii", train_path + ".lt_str_lbl", _STRESS_CLASS_LABELS)    
   return train_path
 
 @registry.register_problem
