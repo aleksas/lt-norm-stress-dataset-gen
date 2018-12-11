@@ -97,6 +97,9 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
 
   def hparams(self, defaults, unused_model_hparams):
     p = defaults
+    
+    p.loss_multiplier = 2.0
+
     inputs_encoder = self._encoders["inputs"]
 
     p.modality = {
@@ -138,10 +141,6 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
   @property
   def is_generate_per_split(self):
     return True
-
-  @property
-  def approx_vocab_size(self):
-    return 2**13  # 8k vocab suffices for this small dataset.
 
   @property
   def num_classes(self):
