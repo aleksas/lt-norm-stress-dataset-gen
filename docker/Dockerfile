@@ -11,12 +11,12 @@ ENV LC_CTYPE en_US.UTF-8
 RUN pip install -U pip && pip install --no-cache-dir \
         tensor2tensor
 
-WORKDIR "~"
+WORKDIR "/root"
 
 # Checkout repo
 RUN git clone https://github.com/aleksas/tensor-stressor
 
-WORKDIR "~/tensor-stressor"
+WORKDIR "/root/tensor-stressor"
 
 EXPOSE 6006
 EXPOSE 8888
