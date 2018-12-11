@@ -13,10 +13,10 @@ General installation instructions are
 
 # Build docker image
 - CPU
-> docker build -t tensor2tensor:tf-1.12.0-py3 -f Dockerfile .
+> docker build -t tensor_stressor:tf-1.12.0-py3 -f Dockerfile .
 
 - GPU
-> docker build -t tensor2tensor:tf-1.12.0-gpu-py3 -f Dockerfile.gpu .
+> docker build -t tensor_stressor:tf-1.12.0-gpu-py3 -f Dockerfile.gpu .
 
 # Run docker
 
@@ -24,7 +24,7 @@ For GPU support install NVidia drivers (ideally latest) and
 [nvidia-docker](https://github.com/NVIDIA/nvidia-docker). Run using
 
 - CPU
-> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor2tensor:tf-1.12.0-py3
+> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor_stressor:tf-1.12.0-py3
 
 - GPU
-> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor2tensor:tf-1.12.0-gpu-py3
+> nvidia-docker run -p 6006:6006 -p 8888:8888 -ti tensor_stressor:tf-1.12.0-gpu-py3

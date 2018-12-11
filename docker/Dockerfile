@@ -1,7 +1,9 @@
 FROM tensorflow/tensorflow:1.12.0-py3
 
+# Install prerequisites
+RUN apt-get clean && apt-get update && apt-get install -y locales git
+
 # Set the locale
-RUN apt-get clean && apt-get update && apt-get install -y locales
 RUN locale-gen en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 
@@ -9,9 +11,14 @@ ENV LC_CTYPE en_US.UTF-8
 RUN pip install -U pip && pip install --no-cache-dir \
         tensor2tensor
 
+WORKDIR "~"
+
+# Checkout repo
+RUN git clone https://github.com/aleksas/tensor-stressor
+
+WORKDIR "~/tensor-stressor"
+
 EXPOSE 6006
 EXPOSE 8888
-
-WORKDIR "/"
 
 CMD ["/bin/bash"]
