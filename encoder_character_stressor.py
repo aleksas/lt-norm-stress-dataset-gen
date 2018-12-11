@@ -1,20 +1,3 @@
-# coding=utf-8
-# Copyright 2018 The Tensor2Tensor Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""IMDB Sentiment Classification Problem."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -32,22 +15,28 @@ from tensor2tensor.utils import registry
 
 import tensorflow as tf
 
-_CLASS_LABELS = ['`', '^', '~', '_']
-_CLASS_LABELS_EOS_ID = len(_CLASS_LABELS) + 1
+_STRESS_CLASS_LABELS = [
+  '`', # grave 
+  '^', # circumflex instead of acute
+  '~', # tilde
+  '_'  # no stress
+]
+
+_CLASS_LABELS_EOS_ID = len(_STRESS_CLASS_LABELS)
 _RE_NON_STRESS_PATTERN = re.compile(r'[^\r\n`^~]')
 _RE_STRESS_PATTERN = re.compile(r'_([`^~])')
 
 _LTLTSTR_TRAIN_DATASETS = [
-    [
-        "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-combo-v1.tgz",  # pylint: disable=line-too-long
-        ("training-parallel-combo-v1/combination_v1.lt-lt_str.lt",
-         "training-parallel-combo-v1/combination_v1.lt-lt_str.lt_str_lbl")
-    ],
-    [
-        "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-ch-v1.tgz",
-        ("training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt",
-         "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt_str_lbl")
-    ],
+  [
+    "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-combo-v1.tgz",  # pylint: disable=line-too-long
+    ("training-parallel-combo-v1/combination_v1.lt-lt_str.lt",
+      "training-parallel-combo-v1/combination_v1.lt-lt_str.lt_str_lbl")
+  ],
+  [
+    "https://github.com/aleksas/tensor-stressor/raw/master/data/training-parallel-ch-v1.tgz",
+    ("training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt",
+      "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str.lt_str_lbl")
+  ],
 ]
 
 def txt_line_iterator(txt_path):
@@ -64,7 +53,7 @@ def encode_class_to_labels_file(source_txt_path, labels_txt_path, class_strs):
   with codecs.open(labels_txt_path, 'w', 'UTF-8') as f:
     f.write(content)
 
-def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=None):
+def text2class_txt_iterator(source_txt_path, labels_txt_path, class_strs=None):
   """Yield dicts for Text2ClassProblem.generate_samples from lines of files.
   Args:
     source_txt_path: txt file with record per line.
@@ -73,7 +62,7 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
     class_strs: list<str> of class label names. Must be in correct order (i.e.
       ["a", "b", "c"] means that "a" will get class ID 0, "b" ID 1, etc.).
   Yields:
-    {"inputs": inputs, "label": label}
+    {"inputs": inputs, "labels": labels}
   """
   if class_strs:
     class_strs = dict([(s, i) for i, s in enumerate(class_strs)])
@@ -84,33 +73,27 @@ def text2multiclass_txt_iterator(source_txt_path, labels_txt_path, class_strs=No
     if class_strs:
       labels = [class_strs[label] for label in labels]
     else:
-      labels = [int(label) or label in labels]
+      labels = [int(label) for label in labels]
 
     yield {"inputs": inputs, "labels": labels}
 
-def _get_wmt_ltltstr_bpe_dataset(directory, filename):
-  """Extract the WMT lt-ltstr corpus `filename` to directory unless it's there."""
+def _get_ltltstr_dataset(directory, filename):
   train_path = os.path.join(directory, filename)
-  if not (tf.gfile.Exists(train_path + ".lt_str_lbl")):
+  if not (tf.gfile.Exists(train_path + ".lt_str_lbl")): # generate stress text file from ascii stressed text
     if not tf.gfile.Exists(train_path + ".lt") or not tf.gfile.Exists(train_path + ".lt_str_ascii"):
-      for url, files in _LTLTSTR_TRAIN_DATASETS:
+      for url ,_ in _LTLTSTR_TRAIN_DATASETS:
         corpus_file = generator_utils.maybe_download_from_drive(
             directory, url.split('/')[-1], url)
         with tarfile.open(corpus_file, "r:gz") as corpus_tar:
           corpus_tar.extractall(directory)
 
-    encode_class_to_labels_file(train_path + ".lt_str_ascii", train_path + ".lt_str_lbl", _CLASS_LABELS)    
+    encode_class_to_labels_file(train_path + ".lt_str_ascii", train_path + ".lt_str_lbl", _STRESS_CLASS_LABELS)    
   return train_path
 
 @registry.register_problem
 class EncoderCharacterStressor(text_problems.Text2ClassProblem):  
   def source_data_files(self, dataset_split):
-    if dataset_split == problem.DatasetSplit.TRAIN:
-      return _LTLTSTR_TRAIN_DATASETS
-    elif dataset_split == problem.DatasetSplit.EVAL:
-      return _LTLTSTR_TRAIN_DATASETS
-    else: # if dataset_split == problem.DatasetSplit.TEST:
-      return _LTLTSTR_TRAIN_DATASETS
+    return _LTLTSTR_TRAIN_DATASETS
 
   def hparams(self, defaults, unused_model_hparams):
     p = defaults
@@ -157,36 +140,25 @@ class EncoderCharacterStressor(text_problems.Text2ClassProblem):
     return True
 
   @property
-  def dataset_splits(self):
-    return [{
-        "split": problem.DatasetSplit.TRAIN,
-        "shards": 10,
-    }, {
-        "split": problem.DatasetSplit.EVAL,
-        "shards": 1,
-    }]
-
-  @property
   def approx_vocab_size(self):
     return 2**13  # 8k vocab suffices for this small dataset.
 
   @property
   def num_classes(self):
-    return len(_CLASS_LABELS) + 1
+    return len(_STRESS_CLASS_LABELS) + 1
 
   def class_labels(self, data_dir):
     del data_dir
-    return _CLASS_LABELS
+    return _STRESS_CLASS_LABELS
   
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
-    """Instance of token generator for the WMT lt->ltstr task, training set."""
     train = dataset_split == problem.DatasetSplit.TRAIN
     dataset_path = ("training-parallel-combo-v1/combination_v1.lt-lt_str"
                     if train else "training-parallel-ch-v1/chrestomatija_v1.lt-lt_str")
-    train_path = _get_wmt_ltltstr_bpe_dataset(tmp_dir, dataset_path)
+    train_path = _get_ltltstr_dataset(tmp_dir, dataset_path)
 
-    return text2multiclass_txt_iterator(train_path + ".lt",
-                                        train_path + ".lt_str_lbl",
-                                        _CLASS_LABELS)
+    return text2class_txt_iterator(train_path + ".lt",
+                                    train_path + ".lt_str_lbl",
+                                    _STRESS_CLASS_LABELS)
 
   
