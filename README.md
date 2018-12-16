@@ -1,11 +1,3 @@
-[new](./encoder_character_stressor_readme.md)
-
-# tensor-stressor
-tensor2tensor for automatic stressing text in Lithuanian
-
-- Use [EN-DE as example](https://github.com/tensorflow/tensor2tensor/blob/master/tensor2tensor/data_generators/translate_ende.py)  to define LT-LTs problem 
-- Use [--t2t_usr_dir](https://github.com/tensorflow/tensor2tensor#adding-your-own-components) parameter to define extra problem search path
-
 # Docker Env
 
 [Instructions](./docker)
@@ -15,14 +7,16 @@ tensor2tensor for automatic stressing text in Lithuanian
 ## Train 
 
 ```bash
-PROBLEM=translate_ltltstr_wmt4k
-HPARAMS=transformer_base_single_gpu
-MODEL=transformer
+PPROBLEM=text_to_mel_spectrogram
+HPARAMS_SET=image_transformer_base
+MODEL=imagetransformer
+WORKER_GPU=2
+HPARAMS="eval_drop_long_sequences=True"
 
 USR_DIR=.
 DATA_DIR=$HOME/t2t_data
 TMP_DIR=/tmp/t2t_datagen
-TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS
+TRAIN_DIR=$HOME/t2t_train/$PROBLEM/$MODEL-$HPARAMS_SET
 
 mkdir -p $DATA_DIR $TMP_DIR
 
@@ -35,17 +29,19 @@ t2t-trainer \
  --tmp_dir=$TMP_DIR \
  --output_dir=$TRAIN_DIR \
  --t2t_usr_dir=$USR_DIR \
- --hparams_set=$HPARAMS \
- --model=$MODEL
+ --hparams_set=$HPARAMS_SET \
+ --hparams=$HPARAMS \
+ --model=$MODEL \
+ --worker_gpu=$WORKER_GPU
 ```
 
 ## Evaluate 
 
 ```bash
 
-PROBLEM=translate_ltltstr_wmt4k
-HPARAMS=transformer_base_single_gpu
-MODEL=transformer
+PPROBLEM=text_to_mel_spectrogram
+HPARAMS_SET=image_transformer_base
+MODEL=imagetransformer
 
 USR_DIR=.
 DATA_DIR=$HOME/t2t_data
