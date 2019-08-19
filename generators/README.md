@@ -4,6 +4,7 @@
   - http://www.vlkk.lt/naujienos/pakomisiu-naujienos/veikiamuju-dalyviu-trumposios-formos-bugos-taisykle-ir-vingiuotas-kodifikacijos-kelias
   - http://donelaitis.vdu.lt/lkk/pdf/alka_SKT.pdf
   - VDU stress SOAP service: http://donelaitis.vdu.lt/Kirtis/KServisas.php#
+  - http://www.vlkk.lt/nuorodos/zodynai
   
 - [ ] Colect database of stressed sentences from http://donelaitis.vdu.lt/garsynas/index.php
 
