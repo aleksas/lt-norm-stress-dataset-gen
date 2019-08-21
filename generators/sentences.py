@@ -6,7 +6,7 @@ from os import mkdir
 from random import randint, sample
 from static.get_skaitvardis import get_number_complex_name, Stress
 
-from text_modifiers import modifiers
+from generators.text_modifiers import modifiers
 
 default_stress = Stress.No
 
@@ -70,36 +70,28 @@ def get_lines(url):
         if l:
             yield l
 
-if __name__ == '__main__':
-    num_lines = set([])
-    with open('__final_1.split.txt', 'w', encoding="utf8") as f_out:
-        for line in get_lines(FINAL_1):
-            f_out.write(line + '\n')
-            line = ps.sub('', line)
-            if n1.match(line):
-                num_lines.add(line)
-
-    num_lines = list(num_lines)
-    num_lines.sort()
-
-    with open('__final_1.split.number.sorted.txt', 'w', encoding="utf8") as fn_out:
-        for line in num_lines:
-            fn_out.write(line + '\n')
+def generate_senteces(config):
+    num_lines = []
+    for line in get_lines(FINAL_1):
+        if n1.match(line):
+            num_lines.append(line)
+        else:
+            yield ps.sub('', line), line
+            yield line, line
         
-    with open('__final_1.split.number.sorted.up.txt', 'w', encoding="utf8") as fn_out:
-        while num_lines:
-            line = num_lines.pop()
-            if "kovo 17 dieną" in line:
-                line = line
-            for p, s_ in modifiers:
-                if not isinstance(s_, list):
-                    s_ = [s_]
-                
-                for s in s_:
-                    m = p.search(line)
-                    if m:
-                        line = p.sub(s, line).strip()
-                        line = line[0].upper() + line[1:]
+    while num_lines:
+        num_line = num_lines.pop()
+        line = num_line
+        for p, s_ in modifiers:
+            if not isinstance(s_, list):
+                s_ = [s_]
+            
+            for s in s_:
+                m = p.search(line)
+                if m:
+                    line = p.sub(s, line).strip()
 
-            if n1.match(line):
-                fn_out.write(line + '\n')
+        if not n1.match(line):
+            yield ps.sub('', num_line), line
+            yield ps.sub('', line), line
+            yield num_line, line

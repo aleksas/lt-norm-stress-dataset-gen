@@ -16,6 +16,7 @@ from generators.float_numbers import generate_float_pairs
 from generators.small_numbers import generate_small_number_pairs, generate_small_number_linked_pairs
 from generators.numbers_with_units import generate_float_unit_pairs, generate_number_unit_pairs
 from generators.dates import generate_years, generate_months, generate_dates
+from generators.sentences import generate_senteces
 
 from utils import remove_stress
 
@@ -50,6 +51,7 @@ def generate_pairs(config):
   pair_generators += [generate_float_unit_pairs(config)]
   pair_generators += [generate_small_number_pairs(config)]
   pair_generators += [generate_small_number_linked_pairs(config)]
+  pair_generators += [generate_senteces(config)]
 
   while len(pair_generators) > 0 or len(unused) > 0:
     if len(unused) > 0:
@@ -63,6 +65,9 @@ def generate_pairs(config):
         continue
       
     val, norm_val = pair
+
+    if len(norm_val) + 7 > config['max_len'] or len(val) + 7 > config['max_len']:
+      continue
     
     mix = (
       [val] * config['mix_val_weight_val'] + 
@@ -72,6 +77,10 @@ def generate_pairs(config):
     val = choice(mix)
     vals.append(val)
     strvals.append(norm_val)  
+
+    if len(norm_val) > config['max_len']:
+      continue
+
     
     v, vs = glue_vals(glue_options, vals, strvals)
     vs_len = len(vs)
@@ -92,7 +101,7 @@ def generate_pairs(config):
         unused.append(pair)
 
       if len(vals) == 0:
-        raise Exception()
+        Exception()
 
       v, vs = glue_vals(glue_options, vals, strvals)
       
