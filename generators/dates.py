@@ -4,8 +4,9 @@ from random import choice, randint
 
 from .utils import increment_stats, default_stress
 
+
 def get_dates(year, month=None, day=None, case='vard.', stress=default_stress):
-  if day and case == 'įnag.' or (not month and not day):
+  if day and case == 'įnag.' or (month == None and day == None):
     case = 'vard.'
 
   if not month:
@@ -39,7 +40,7 @@ def get_dates(year, month=None, day=None, case='vard.', stress=default_stress):
       
     if not day:
       m = get_complex_name(
-        value=month, category_type="Month",
+        value=month - 1, category_type="Month",
         number='vns', case=case, stress=stress)
 
       yield y_in + m, y_out + m
