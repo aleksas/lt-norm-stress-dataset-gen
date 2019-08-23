@@ -2,7 +2,7 @@ from random import randint, sample
 from math import log10
 from static.get_skaitvardis import get_number_complex_name, Stress
 from static.get_zodis import get_complex_name
-from static.get_text import rand_ones, rand_few, rand_many
+from generators.text_modifiers import rand_ones, rand_few, rand_many
 
 from .utils import generate_values_, increment_stats, default_stress
 from .float_numbers import generate_float_pairs
