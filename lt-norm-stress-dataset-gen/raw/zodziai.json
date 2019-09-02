@@ -1,0 +1,40 @@
+{
+   "Default": "All", 
+   "All": {
+      "diena": ["dien","a","os","ai","ą","a","oje","os","ų","oms","as","omis","ose"],
+      "metai": ["met",null,null,null,null,null,null,"ai","ų","ams","us","ais","uose"],
+      "procentas": ["procent","as","o","ui","ą","u","e","ai","ų","ams","us","ais","uose"],
+      "farenheitas": ["farenheit","as","o","ui","ą","u","e","ai","ų","ams","us","ais","uose"],
+      "celsijus": ["celsij","us","aus","ui","ą","u","e","ai","ų","ams","us","ais","uose"],
+      "euras": ["eur","as","o","ui","ą","u","e","ai","ų","ams","us","ais","uose"],
+      "doleris": ["doler","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "laipsnis": ["laipsn","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"]
+   },   
+   "Month": {
+      "0": ["saus","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "1": ["vasar", "is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "2": ["kov", "as","o","ui","ą","u","e","ai","ų","ams","us","ais","uose"],
+      "3": ["baland", "is","žio","žiui","į","žiu","yje","žiai","žių","žiams","žius","žiais","žiuose"],
+      "4": ["geguž", "ė","ės","ei","ę","e","ėj","ės","ių","ėms","es","iomis","iose"],
+      "5": ["biržel", "is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "6": ["liep", "a","os","ai","ą","a","oje","os","ų","oms","as","omis","ose"],
+      "7": ["rugpjū", "tis","čio","čiuim","tį","čiu","tyje","čiai","čių","čiams","čius","čiais","čiuose"],
+      "8": ["rugsėj", "is","o","ui","į","u","yje","ai","ų","ams","us","ais","uose"],
+      "9": ["spal","is","io","iuim","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "10": ["lapkri", "tis","čio","čiuim","tį","čiu","tyje","čiai","čių","čiams","čius","čiais","čiuose"],
+      "11": ["gruod", "is","žio","žiui","į","žiu","yje","žiai","žių","žiams","žius","žiais","žiuose"]
+   }, 
+   "Day": {
+      "0": ["pirmadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "1": ["antradien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "2": ["trečiadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "3": ["ketvrtadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "4": ["penktadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "5": ["šeštadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"],
+      "6": ["sekmadien","is","io","iui","į","iu","yje","iai","ių","iams","ius","iais","iuose"]
+   },  
+   "Variations": {
+      "number": ["vns", "dgs"],
+      "case": ["vard.","kilm.","naud.","gal.","įnag.","viet."]
+   }
+}

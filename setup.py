@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 install_requires = []
 with open('requirements.txt', 'r') as f:
-	for line in f:
+  for line in f:
     if line.strip():
       install_requires.append(line.strip())
 
 setup (
-  name='tensor-stressor',
+  name='lt-norm-stress-dataset-gen',
   version='0.0.1',
   long_description=long_description,
   long_description_content_type="text/markdown",
